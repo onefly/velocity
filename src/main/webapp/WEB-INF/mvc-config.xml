@@ -10,8 +10,16 @@
 	<!-- Uncomment and your base-package here: -->
 	<context:component-scan base-package="com.jd" />
 
-
-	<mvc:annotation-driven />
+	<!-- 处理json格式 -->
+	<bean id="customObjectMapper" class="com.jd.head.util.CustomObjectMapper" />
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+				<property name="objectMapper" ref="customObjectMapper"></property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
 
 	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
 		<property name="prefix" value="/WEB-INF/view/"/> <property name="suffix" 
@@ -22,7 +30,7 @@
 		<property name="resourceLoaderPath">
 			<value>/WEB-INF</value>
 		</property>
-		
+
 		<property name="velocityProperties">
 			<props>
 				<prop key="input.encoding">utf-8</prop>
@@ -32,40 +40,23 @@
 		</property>
 	</bean>
 
-	<bean name="negotiationViewResolver"
-		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-		<property name="order" value="1"></property>
-		<property name="mediaTypes">
-			<map>
-				<entry key="json" value="application/json" />
-			</map>
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+		<property name="order" value="1" />
+		<property name="cache" value="false"></property>
+		<property name="prefix">
+			<value>/view/</value>
 		</property>
-		<property name="viewResolvers">
-			<list>
-				<bean id="viewResolver"
-					class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
-					<property name="order" value="2" />
-					<property name="cache" value="false"></property>
-					<property name="prefix">
-						<value>/view/</value>
-					</property>
-					<property name="suffix">
-						<value>.vm</value>
-					</property>
-					<property name="exposeSpringMacroHelpers">
-						<value>true</value>
-					</property>
-					<property name="contentType">
-						<value>text/html;charset=utf-8</value>
-					</property>
-				</bean>
-			</list>
+		<property name="suffix">
+			<value>.vm</value>
 		</property>
-		<property name="defaultViews">
-			<list>
-				<bean
-					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
-			</list>
+		<property name="exposeSpringMacroHelpers">
+			<value>true</value>
+		</property>
+		<property name="contentType">
+			<value>text/html;charset=utf-8</value>
 		</property>
 	</bean>
+
+
 </beans>
